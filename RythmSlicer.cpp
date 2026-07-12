@@ -1284,12 +1284,18 @@ audio interactif conçu pour dynamiser vos boucles et échantillons.
     tranche (bégaiement/roulement).
 
 ----------------------------------------------------------------------
-5. EXPORT VERS LE DAW (DRAG & DROP WAV)
+5. EXPORT VERS LE DAW (ENREGISTREMENT TEMPS RÉEL & DRAG & DROP)
 ----------------------------------------------------------------------
 
-  - Cliquez sur le bandeau en bas, maintenez le clic enfoncé et 
-    glissez-le vers une piste audio de votre DAW. RythmSlicer compile 
-    la boucle modifiée en WAV et l'importe directement dans votre DAW.
+  - Étape 1 : Cliquez sur le bandeau en bas (gris, "CLIQUEZ ICI...") 
+    pour démarrer l'enregistrement temps réel de la sortie audio. 
+    Le bandeau s'allume en ORANGE clignotant.
+  - Étape 2 : Cliquez à nouveau sur le bandeau orange pour arrêter 
+    l'enregistrement. Il devient VERT ("PRÊT !...").
+  - Étape 3 : Maintenez le clic et glissez-déposez le bouton vert 
+    vers votre DAW.
+  - Nouvel Enregistrement : Cliquez simplement sur le bouton vert 
+    pour effacer la mémoire et démarrer un nouvel enregistrement.
 
 ----------------------------------------------------------------------
 6. RÉFÉRENCES ET COPYRIGHTS (LICENCES LOGICIELLES)

@@ -62,11 +62,17 @@ Ces effets modifient l'ordre de lecture des tranches pour créer de la variation
 
 ---
 
-## 5. Export vers le DAW (Drag & Drop WAV)
+## 5. Export vers le DAW (Enregistrement Temps Réel & Drag & Drop)
 
-* **Bandeau "CLIQUEZ & GLISSEZ ICI VERS LE DAW (WAV)"** : 
-  * Cliquez sur ce bouton, maintenez le clic enfoncé et glissez-le vers une piste audio de votre DAW (Ableton, FL Studio, Reaper, etc.).
-  * RythmSlicer compile en arrière-plan le sample découpé avec vos réglages actuels (incluant le Stutter et la Randomisation) et génère un nouveau fichier `.wav` propre directement importé sur votre piste !
+RythmSlicer intègre un enregistreur audio en temps réel pour capturer exactement ce que vous entendez :
+* **Étape 1 : Lancer l'enregistrement**
+  * Cliquez sur le bandeau en bas de la fenêtre (gris foncé, affichant *CLIQUEZ ICI POUR ENREGISTRER LA SÉQUENCE*).
+  * Le bandeau s'allume en **orange** clignotant. Le plugin enregistre désormais tout l'audio qu'il produit en temps réel (pratique pour capturer les variations aléatoires de stutter ou randomisation !).
+* **Étape 2 : Arrêter l'enregistrement**
+  * Cliquez une deuxième fois sur le bandeau orange. L'enregistrement s'arrête et le bandeau devient **vert** (affichant *✔ PRÊT ! GLISSEZ ICI VERS LE DAW*).
+* **Étape 3 : Glisser-Déposer dans le DAW**
+  * Cliquez sur le bandeau vert, maintenez enfoncé et glissez-le vers une piste audio de votre DAW.
+* **Nouvel Enregistrement** : Si vous cliquez simplement sur le bandeau vert sans le glisser, il effacera la mémoire et relancera instantanément un nouvel enregistrement.
 
 ---
 

@@ -20,8 +20,11 @@
 * **Randomisation** : Probabilité de sauter de manière aléatoire vers une autre tranche lors de la lecture pour des variations infinies.
 * **Répétition (Stutter)** : Probabilité de répéter la même tranche (effet roll/bégaiement).
 
-### 4. Glisser-Déposer Direct (WAV Drag & Drop)
-* Glissez le bouton en bas directement vers votre DAW pour y déposer la boucle modifiée au format audio `.wav` haute qualité compilée instantanément en tâche de fond.
+### 4. Enregistrement Temps Réel & Glisser-Déposer (WAV Drag & Drop)
+* Cliquez sur le bandeau en bas pour démarrer l'enregistrement en temps réel de votre boucle avec tous les effets de stutter ou randomisation.
+* Cliquez à nouveau pour arrêter. Le bouton devient vert et indique que le fichier WAV est prêt.
+* Glissez le bouton vert directement vers votre DAW pour y déposer la boucle audio.
+* Cliquez à nouveau sur le bouton pour écraser et lancer un nouvel enregistrement.
 
 ### 5. Aide Utilisateur Intégrée
 * Un bouton **"?"** en haut à droite ouvre un overlay d'aide déroulant complet contenant le manuel utilisateur interactif (tiré de `help.md`).
