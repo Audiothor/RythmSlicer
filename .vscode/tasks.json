@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compiler RythmSlicer (Debug)",
+            "type": "shell",
+            "command": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "args": [
+                "C:\\Users\\comme\\Documents\\JUCE\\modules\\RythmSlicer\\NewProject\\Builds\\VisualStudio2026\\RythmSlicer.sln",
+                "/p:Configuration=Debug",
+                "/p:Platform=x64"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Compiler RythmSlicer (Release)",
+            "type": "shell",
+            "command": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "args": [
+                "C:\\Users\\comme\\Documents\\JUCE\\modules\\RythmSlicer\\NewProject\\Builds\\VisualStudio2026\\RythmSlicer.sln",
+                "/p:Configuration=Release",
+                "/p:Platform=x64"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
