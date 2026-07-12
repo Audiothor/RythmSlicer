@@ -1,8 +1,8 @@
 /**
  * ==============================================================================
  * RythmSlicer.cpp
- * Version 1.6.3 - Optimisé pour JUCE 8
- * Design par ARTSEN - Version v1.6.3 (Édition Performance)
+ * Version 1.6.4 - Optimisé pour JUCE 8
+ * Design par ARTSEN - Version v1.6.4 (Édition Performance)
  * Intègre le moteur de synchronisation d'hôte (DAW), des potentiomètres
  * graphiques personnalisés et le moteur de glisser-déposer de rendu WAV direct
  * vers le DAW.
@@ -1222,7 +1222,7 @@ public:
     helpTextLabel.setFont(juce::Font(juce::FontOptions("Segoe UI", 13.0f, juce::Font::plain)));
 
     juce::String helpText = juce::String::fromUTF8 (R"help(======================================================================
-RYTHMSLICER v1.6.3 - GUIDE D'UTILISATION OFFICIEL
+RYTHMSLICER v1.6.4 - GUIDE D'UTILISATION OFFICIEL
 ======================================================================
 
 Bienvenue dans l'aide intégrée de RythmSlicer, le plugin de découpage
@@ -1573,10 +1573,10 @@ public:
     g.setFont(juce::Font(juce::FontOptions(20.0f, juce::Font::bold)));
     g.drawText("RythmSlicer", 20, 10, 140, 24, juce::Justification::left);
 
-    // Numéro de Version "v1.6.3" en cyan
+    // Numéro de Version "v1.6.4" en cyan
     g.setColour(juce::Colour(0xFF00E5FF));
     g.setFont(juce::Font(juce::FontOptions(12.0f, juce::Font::bold)));
-    g.drawText("v1.6.3", 155, 18, 60, 16, juce::Justification::left);
+    g.drawText("v1.6.4", 155, 18, 60, 16, juce::Justification::left);
 
     // Signature "ARTSEN"
     g.setColour(juce::Colour(0xFF8A8A9F));
