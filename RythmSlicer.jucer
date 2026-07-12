@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="dM2R0R" name="RythmSlicer" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyName="ARTSEN"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyName="AUDIOTHOR"
               pluginFormats="buildVST3" companyCopyright="Freeware" pluginVersion="1.6.5">
   <MAINGROUP id="f8rgO2" name="RythmSlicer">
     <GROUP id="{DD204D76-B02E-40FB-5F9C-515661D60B0D}" name="Source"/>

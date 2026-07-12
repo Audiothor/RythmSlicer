@@ -55,6 +55,6 @@ Le projet est entièrement compatible macOS :
 ---
 
 ## 📝 Licence
-Projet distribué sous **Licence MIT** (libre d'utilisation, modification et distribution). Conçu et développé par **ARTSEN - Freeware** & **Antigravity**.
+Projet distribué sous **Licence MIT** (libre d'utilisation, modification et distribution). Conçu et développé par **AUDIOTHOR - Freeware** & **Antigravity**.
 
 *Note : Les copyrights des frameworks et bibliothèques tierces utilisés (JUCE, Microsoft, Git, Standard C++) sont décrits en fin du guide d'aide (`help.md`).*

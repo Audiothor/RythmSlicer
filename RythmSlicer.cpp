@@ -2,7 +2,7 @@
  * ==============================================================================
  * RythmSlicer.cpp
  * Version 1.6.5 - Optimisé pour JUCE 8
- * Design par ARTSEN - Version v1.6.5 (Édition Performance)
+ * Design par AUDIOTHOR - Version v1.6.5 (Édition Performance)
  * Intègre le moteur de synchronisation d'hôte (DAW), des potentiomètres
  * graphiques personnalisés et le moteur de glisser-déposer de rendu WAV direct
  * vers le DAW.
@@ -559,7 +559,7 @@ public:
 
     juce::File tempDir =
         juce::File::getSpecialLocation(juce::File::tempDirectory);
-    juce::File wavFile = tempDir.getChildFile("RythmSlicer_Export_ARTSEN.wav");
+    juce::File wavFile = tempDir.getChildFile("RythmSlicer_Export_AUDIOTHOR.wav");
     if (wavFile.existsAsFile())
       wavFile.deleteFile();
 
@@ -1584,10 +1584,10 @@ public:
     g.setFont(juce::Font(juce::FontOptions(12.0f, juce::Font::bold)));
     g.drawText("v1.6.5", 155, 18, 60, 16, juce::Justification::left);
 
-    // Signature "ARTSEN"
+    // Signature "AUDIOTHOR"
     g.setColour(juce::Colour(0xFF8A8A9F));
     g.setFont(juce::Font(juce::FontOptions(10.0f, juce::Font::bold)));
-    g.drawText("BY ARTSEN - Freeware", 20, 34, 200, 16, juce::Justification::left);
+    g.drawText("BY AUDIOTHOR - Freeware", 20, 34, 200, 16, juce::Justification::left);
   }
 
   void resized() override {
