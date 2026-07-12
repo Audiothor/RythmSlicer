@@ -1,4 +1,4 @@
-# RythmSlicer v1.6.4
+# RythmSlicer v1.6.5
 
 **RythmSlicer** est un plugin audio VST3 de découpage rythmique (slicer) interactif et créatif optimisé pour JUCE 8. Il permet de manipuler vos boucles audio (drum loops, breaks) en temps réel, de réorganiser les tranches de manière aléatoire ou avec effet de stutter, et de glisser-déposer le résultat directement dans votre séquenceur (DAW).
 

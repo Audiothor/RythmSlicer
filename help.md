@@ -1,4 +1,4 @@
-# RythmSlicer v1.6.4 - Guide d'Utilisation Officiel
+# RythmSlicer v1.6.5 - Guide d'Utilisation Officiel
 
 Bienvenue dans l'aide intégrée de **RythmSlicer**, le plugin de découpage audio interactif conçu pour dynamiser vos flux de production de drum loops et d'échantillons rythmiques.
 
