@@ -4,11 +4,10 @@
         {
             "label": "Compiler RythmSlicer (Debug)",
             "type": "shell",
-            "command": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "command": "cmd",
             "args": [
-                "C:\\Users\\comme\\Documents\\JUCE\\modules\\RythmSlicer\\NewProject\\Builds\\VisualStudio2026\\RythmSlicer.sln",
-                "/p:Configuration=Debug",
-                "/p:Platform=x64"
+                "/c",
+                "\"C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" \"C:\\Users\\comme\\Documents\\JUCE\\modules\\RythmSlicer\\NewProject\\Builds\\VisualStudio2026\\RythmSlicer.sln\" /p:Configuration=Debug /p:Platform=x64 && xcopy /E /I /Y \"C:\\Users\\comme\\Documents\\JUCE\\modules\\RythmSlicer\\NewProject\\Builds\\VisualStudio2026\\x64\\Debug\\VST3\\RythmSlicer.vst3\" \"c:\\Users\\comme\\Documents\\GitHub\\RythmSlicer\\Binaries\\RythmSlicer.vst3\""
             ],
             "group": "build",
             "presentation": {
@@ -20,11 +19,10 @@
         {
             "label": "Compiler RythmSlicer (Release)",
             "type": "shell",
-            "command": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "command": "cmd",
             "args": [
-                "C:\\Users\\comme\\Documents\\JUCE\\modules\\RythmSlicer\\NewProject\\Builds\\VisualStudio2026\\RythmSlicer.sln",
-                "/p:Configuration=Release",
-                "/p:Platform=x64"
+                "/c",
+                "\"C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" \"C:\\Users\\comme\\Documents\\JUCE\\modules\\RythmSlicer\\NewProject\\Builds\\VisualStudio2026\\RythmSlicer.sln\" /p:Configuration=Release /p:Platform=x64 && xcopy /E /I /Y \"C:\\Users\\comme\\Documents\\JUCE\\modules\\RythmSlicer\\NewProject\\Builds\\VisualStudio2026\\x64\\Release\\VST3\\RythmSlicer.vst3\" \"c:\\Users\\comme\\Documents\\GitHub\\RythmSlicer\\Binaries\\RythmSlicer.vst3\""
             ],
             "group": {
                 "kind": "build",
