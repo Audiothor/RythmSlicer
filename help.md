@@ -67,3 +67,14 @@ Ces effets modifient l'ordre de lecture des tranches pour créer de la variation
 * **Bandeau "CLIQUEZ & GLISSEZ ICI VERS LE DAW (WAV)"** : 
   * Cliquez sur ce bouton, maintenez le clic enfoncé et glissez-le vers une piste audio de votre DAW (Ableton, FL Studio, Reaper, etc.).
   * RythmSlicer compile en arrière-plan le sample découpé avec vos réglages actuels (incluant le Stutter et la Randomisation) et génère un nouveau fichier `.wav` propre directement importé sur votre piste !
+
+---
+
+## 6. Références et Copyrights (Licences Logicielles)
+
+RythmSlicer est distribué sous licence libre **MIT**. Les logiciels tiers suivants ont permis sa réalisation :
+
+* **JUCE Framework** (version 8) : Copyright (c) 2024 - Raw Material Software Limited. Utilisé sous licence de développement JUCE.
+* **Microsoft Visual Studio & MSBuild** : Copyright (c) - Microsoft Corporation.
+* **Git Version Control System** : Copyright (c) 2005-2026 - Linus Torvalds et ses contributeurs.
+* **Bibliothèque Standard C++ (STL)** : Conforme aux normes ISO/IEC.

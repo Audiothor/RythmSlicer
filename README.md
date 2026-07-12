@@ -34,13 +34,24 @@
 * **JUCE 8** (Projucer)
 * **Visual Studio 2026** (ou version compatible avec MSVC C++)
 
-### Compilation avec VS Code
+### Compilation
+Le dépôt contient le fichier de configuration universel **`RythmSlicer.jucer`** à la racine, configuré pour exporter les cibles vers Windows et macOS.
+
+#### Windows (VS Code)
 Le dépôt contient un fichier `.vscode/tasks.json` configuré pour compiler automatiquement le plugin sous Windows avec MSBuild :
 1. Ouvrez le projet dans VS Code.
-2. Lancez le build avec `Ctrl+Shift+B` (ou tâche `Compiler RythmSlicer (Release)`).
-3. Le binaire compiled `RythmSlicer.vst3` est automatiquement copié dans le dossier `Binaries/` du projet.
+2. Lancez le build avec `Ctrl+Shift+B` (ou exécutez la tâche `Compiler RythmSlicer (Release)`).
+3. Le binaire VST3 compilé est copié dans le dossier `Binaries/RythmSlicer.vst3`.
+
+#### macOS (Xcode)
+Le projet est entièrement compatible macOS :
+1. Ouvrez le fichier `RythmSlicer.jucer` dans l'application **Projucer** (JUCE 8).
+2. Projucer détectera l'exportateur **Xcode (macOS)** déjà configuré. Cliquez sur le bouton d'exportation pour ouvrir le projet dans Xcode.
+3. Lancez la compilation (`Cmd + B`) dans Xcode en configuration Release. Le VST3 macOS sera créé dans le dossier de build de Xcode, prêt pour être importé dans Logic Pro, Ableton, etc.
 
 ---
 
 ## 📝 Licence
-Projet sous licence libre (Freeware). Conçu et développé par **ARTSEN** & **Antigravity**.
+Projet distribué sous **Licence MIT** (libre d'utilisation, modification et distribution). Conçu et développé par **ARTSEN - Freeware** & **Antigravity**.
+
+*Note : Les copyrights des frameworks et bibliothèques tierces utilisés (JUCE, Microsoft, Git, Standard C++) sont décrits en fin du guide d'aide (`help.md`).*
