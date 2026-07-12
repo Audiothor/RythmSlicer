@@ -88,62 +88,10 @@ private:
 };
 
 // ==============================================================================
-// COMPOSANT INTERACTIF DE GLISSER-DÉPOSER DE WAV POUR LE DAW
+// FORWARD DECLARATIONS
 // ==============================================================================
-class WavDragComponent : public juce::Component {
-public:
-  WavDragComponent(std::function<juce::File()> renderCallback)
-      : onRenderTrigger(renderCallback) {}
-
-  void paint(juce::Graphics &g) override {
-    auto bounds = getLocalBounds().toFloat();
-
-    // Couleur de fond dynamique au survol
-    g.setColour(isMouseOver ? juce::Colour(0x2200E5FF)
-                            : juce::Colour(0xFF111115));
-    g.fillRoundedRectangle(bounds, 6.0f);
-
-    g.setColour(isMouseOver ? juce::Colour(0xFF00E5FF)
-                            : juce::Colour(0xFF2D2D3A));
-    g.drawRoundedRectangle(bounds, 6.0f, 1.5f);
-
-    g.setColour(juce::Colours::white);
-    g.setFont(juce::Font(juce::FontOptions(11.0f, juce::Font::bold)));
-
-    g.drawText("CLIQUEZ & GLISSEZ ICI VERS LE DAW (WAV)", getLocalBounds(),
-               juce::Justification::centred);
-  }
-
-  void mouseEnter(const juce::MouseEvent &) override {
-    isMouseOver = true;
-    repaint();
-  }
-  void mouseExit(const juce::MouseEvent &) override {
-    isMouseOver = false;
-    repaint();
-  }
-
-  void mouseDrag(const juce::MouseEvent &e) override {
-    if (!hasDragged && e.getDistanceFromDragStart() > 10) {
-      hasDragged = true;
-      if (onRenderTrigger) {
-        juce::File tempWavFile = onRenderTrigger();
-        if (tempWavFile.existsAsFile()) {
-          // Lancer l'action de drag natif vers le DAW (Ableton, FL Studio...)
-          juce::DragAndDropContainer::performExternalDragDropOfFiles(
-              {tempWavFile.getFullPathName()}, false, this);
-        }
-      }
-    }
-  }
-
-  void mouseUp(const juce::MouseEvent &) override { hasDragged = false; }
-
-private:
-  std::function<juce::File()> onRenderTrigger;
-  bool isMouseOver = false;
-  bool hasDragged = false;
-};
+class SlicerAudioProcessor;
+class WavDragComponent;
 
 // ==============================================================================
 // 1. LE PROCESSEUR AUDIO (Logique DSP, gestion de fichier et séquenceur)
@@ -588,6 +536,9 @@ public:
   void prepareToPlay(double sampleRate, int samplesPerBlock) override {
     juce::ignoreUnused(samplesPerBlock);
     fadeLength = (int)(sampleRate * 0.005);
+    recordingBuffer.setSize(2, (int)(120.0 * sampleRate)); // 2 min max
+    recordingBuffer.clear();
+    recordingWritePos.store(0);
   }
 
   void releaseResources() override {}
@@ -754,8 +705,15 @@ public:
       if (auto posOpt = hostPlayHead->getPosition()) {
         hostIsPlaying = posOpt->getIsPlaying();
         if (auto bpmOpt = posOpt->getBpm()) {
-          // L'hôte fournit le BPM en continu
           lastHostBpm = *bpmOpt;
+          
+          // Initialise automatiquement le BPM interne à l'ouverture sur le BPM du DAW
+          if (!bpmInitialized) {
+            bpmInitialized = true;
+            if (bpmParam != nullptr) {
+              bpmParam->store(static_cast<float>(*bpmOpt));
+            }
+          }
         }
       }
     }
@@ -822,9 +780,74 @@ public:
 
       currentPlaybackSample.store(playPos);
     }
+
+    // Enregistrement temps réel si actif
+    if (recordingState.load() == 1) {
+      int writePos = recordingWritePos.load();
+      int maxSamples = recordingBuffer.getNumSamples();
+      int samplesToRecord = std::min(numSamplesToProcess, maxSamples - writePos);
+      if (samplesToRecord > 0) {
+        for (int channel = 0; channel < 2; ++channel) {
+          int sourceChannel = channel % totalNumOutputChannels;
+          recordingBuffer.copyFrom(channel, writePos, buffer, sourceChannel, 0, samplesToRecord);
+        }
+        recordingWritePos.store(writePos + samplesToRecord);
+        if (writePos + samplesToRecord >= maxSamples) {
+          recordingState.store(2);
+          triggerSaveRecordedFile();
+        }
+      }
+    }
   }
 
   double getLastHostBpm() const { return lastHostBpm; }
+
+  int getRecordingState() const { return recordingState.load(); }
+  bool isRecordingActive() const { return recordingState.load() == 1; }
+  bool isRecordingReady() const { return recordingState.load() == 2; }
+
+  void startRecording() {
+    recordingBuffer.clear();
+    recordingWritePos.store(0);
+    recordingState.store(1);
+  }
+
+  void stopRecording() {
+    if (recordingState.load() == 1) {
+      recordingState.store(2);
+      triggerSaveRecordedFile();
+    }
+  }
+
+  juce::File getRecordedFile() const { return recordedWavFile; }
+
+  void triggerSaveRecordedFile() {
+    recordedWavFile = juce::File::getSpecialLocation(juce::File::tempDirectory)
+                          .getChildFile("RythmSlicer_recorded_export.wav");
+    if (recordedWavFile.existsAsFile()) {
+      recordedWavFile.deleteFile();
+    }
+
+    int writePos = recordingWritePos.load();
+    if (writePos > 0) {
+      double sampleRate = getSampleRate();
+      if (sampleRate <= 0.0) sampleRate = 44100.0;
+
+      juce::WavAudioFormat wavFormat;
+      std::unique_ptr<juce::FileOutputStream> outStream(recordedWavFile.createOutputStream());
+      if (outStream != nullptr) {
+#pragma warning(push)
+#pragma warning(disable : 4996)
+        std::unique_ptr<juce::AudioFormatWriter> writer(
+            wavFormat.createWriterFor(outStream.release(), sampleRate,
+                                      2, 16, {}, 0));
+#pragma warning(pop)
+        if (writer != nullptr) {
+          writer->writeFromAudioSampleBuffer(recordingBuffer, 0, writePos);
+        }
+      }
+    }
+  }
 
   const juce::String getName() const override { return "RythmSlicer"; }
   bool acceptsMidi() const override { return true; }
@@ -847,8 +870,10 @@ public:
   void setStateInformation(const void *data, int sizeInBytes) override {
     std::unique_ptr<juce::XmlElement> xmlState(
         getXmlFromBinary(data, sizeInBytes));
-    if (xmlState != nullptr && xmlState->hasTagName(state.state.getType()))
+    if (xmlState != nullptr && xmlState->hasTagName(state.state.getType())) {
       state.replaceState(juce::ValueTree::fromXml(*xmlState));
+      bpmInitialized = true; // Évite d'écraser la valeur restaurée par l'initialisation auto
+    }
   }
 
   bool hasEditor() const override { return true; }
@@ -891,12 +916,109 @@ private:
   int lastGridIndex = -1;
   float lastBeatsCount = -1.0f;
   int lastSlicingMode = -1;
-  float lastSensitivity = -1.0f;
+          float lastSensitivity = -1.0f;
 
   std::atomic<float> *modeParam = nullptr;
   std::atomic<float> *sensitivityParam = nullptr;
 
+  bool bpmInitialized = false;
+
+  std::atomic<int> recordingState { 0 };
+  juce::AudioBuffer<float> recordingBuffer;
+  std::atomic<int> recordingWritePos { 0 };
+  juce::File recordedWavFile;
+ 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SlicerAudioProcessor)
+};
+
+// ==============================================================================
+// COMPOSANT INTERACTIF D'ENREGISTREMENT ET DE GLISSER-DÉPOSER DE WAV POUR LE DAW
+// ==============================================================================
+class WavDragComponent : public juce::Component {
+public:
+  WavDragComponent(SlicerAudioProcessor &p) : processor(p) {}
+
+  void paint(juce::Graphics &g) override {
+    auto bounds = getLocalBounds().toFloat();
+    int recState = processor.getRecordingState();
+
+    juce::Colour bgCol;
+    juce::Colour borderCol;
+    juce::String text;
+
+    if (recState == 1) { // Enregistrement en cours
+      bgCol = juce::Colour(0x66FF5A00); // Orange transparent
+      borderCol = juce::Colour(0xFFFF5A00); // Orange fluo
+      // Faire clignoter le texte/icône
+      bool isFlashOn = (juce::Time::getApproximateMillisecondCounter() / 500) % 2 == 0;
+      text = (isFlashOn ? juce::String::fromUTF8("🔴 ") : juce::String("   ")) + 
+             juce::String::fromUTF8("ENREGISTREMENT EN COURS... CLIQUEZ POUR ARRÊTER");
+    } else if (recState == 2) { // Prêt à être glissé
+      bgCol = isMouseOver ? juce::Colour(0x4400FF66) : juce::Colour(0x2200FF66); // Vert transparent
+      borderCol = juce::Colour(0xFF00FF66); // Vert fluo
+      text = juce::String::fromUTF8("✔ PRÊT ! GLISSEZ ICI VERS LE DAW (OU CLIC POUR RE-ENREGISTRER)");
+    } else { // Inactif / Prêt à enregistrer
+      bgCol = isMouseOver ? juce::Colour(0x2200E5FF) : juce::Colour(0xFF111115);
+      borderCol = isMouseOver ? juce::Colour(0xFF00E5FF) : juce::Colour(0xFF2D2D3A);
+      text = juce::String::fromUTF8("CLIQUEZ ICI POUR ENREGISTRER LA SÉQUENCE");
+    }
+
+    g.setColour(bgCol);
+    g.fillRoundedRectangle(bounds, 6.0f);
+
+    g.setColour(borderCol);
+    g.drawRoundedRectangle(bounds, 6.0f, 1.5f);
+
+    g.setColour(juce::Colours::white);
+    g.setFont(juce::Font(juce::FontOptions(11.0f, juce::Font::bold)));
+    g.drawText(text, getLocalBounds(), juce::Justification::centred);
+  }
+
+  void mouseEnter(const juce::MouseEvent &) override {
+    isMouseOver = true;
+    repaint();
+  }
+  void mouseExit(const juce::MouseEvent &) override {
+    isMouseOver = false;
+    repaint();
+  }
+
+  void mouseDown(const juce::MouseEvent &e) override {
+    mouseDownPos = e.position;
+    hasDragged = false;
+  }
+
+  void mouseDrag(const juce::MouseEvent &e) override {
+    if (processor.getRecordingState() == 2) { // Prêt
+      if (!hasDragged && e.getDistanceFromDragStart() > 10) {
+        hasDragged = true;
+        juce::File recordedFile = processor.getRecordedFile();
+        if (recordedFile.existsAsFile()) {
+          juce::DragAndDropContainer::performExternalDragDropOfFiles(
+              {recordedFile.getFullPathName()}, false, this);
+        }
+      }
+    }
+  }
+
+  void mouseUp(const juce::MouseEvent &) override {
+    if (!hasDragged) {
+      int recState = processor.getRecordingState();
+      if (recState == 1) { // Recording -> Stop
+        processor.stopRecording();
+      } else { // Idle or Ready -> Start recording
+        processor.startRecording();
+      }
+      repaint();
+    }
+    hasDragged = false;
+  }
+
+private:
+  SlicerAudioProcessor &processor;
+  bool isMouseOver = false;
+  bool hasDragged = false;
+  juce::Point<float> mouseDownPos;
 };
 
 // ==============================================================================
@@ -1231,7 +1353,7 @@ public:
         visualizer(p), randomKnobLookAndFeel(juce::Colour(0xFF00E5FF)),
         repeatKnobLookAndFeel(juce::Colour(0xFFFF006E)),
         sensitivityKnobLookAndFeel(juce::Colour(0xFF00E5FF)),
-        wavDragComponent([this]() { return processor.renderLoopToWavFile(); }) {
+        wavDragComponent(p) {
     processor.addChangeListener(this);
 
     // Config Bouton d'Aide "?"
@@ -1428,8 +1550,9 @@ public:
                          juce::dontSendNotification);
     }
 
-    if (processor.isCurrentlyPlaying()) {
+    if (processor.isCurrentlyPlaying() || processor.isRecordingActive()) {
       visualizer.repaint();
+      wavDragComponent.repaint();
     }
   }
 
