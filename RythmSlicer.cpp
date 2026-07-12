@@ -1092,92 +1092,98 @@ public:
     helpTextLabel.setCaretVisible(false);
     helpTextLabel.setScrollbarsShown(false);
 
+    // Style de la boîte de texte
     helpTextLabel.setColour(juce::TextEditor::backgroundColourId, juce::Colour(0xFF1E1E24));
     helpTextLabel.setColour(juce::TextEditor::textColourId, juce::Colours::white);
-    helpTextLabel.setFont(juce::Font(juce::FontOptions(13.0f)));
+    helpTextLabel.setColour(juce::TextEditor::outlineColourId, juce::Colours::transparentBlack);
+    helpTextLabel.setColour(juce::TextEditor::focusedOutlineColourId, juce::Colours::transparentBlack);
+    helpTextLabel.setFont(juce::Font(juce::FontOptions("Segoe UI", 13.0f, juce::Font::plain)));
 
-    juce::String helpMarkdown = R"markdown(# RythmSlicer v1.6.3 - Guide d'Utilisation Officiel
+    juce::String helpText = juce::String::fromUTF8 (R"help(======================================================================
+RYTHMSLICER v1.6.3 - GUIDE D'UTILISATION OFFICIEL
+======================================================================
 
-Bienvenue dans l'aide intégrée de **RythmSlicer**, le plugin de découpage audio interactif conçu pour dynamiser vos flux de production de drum loops et d'échantillons rythmiques.
+Bienvenue dans l'aide intégrée de RythmSlicer, le plugin de découpage
+audio interactif conçu pour dynamiser vos boucles et échantillons.
 
----
+----------------------------------------------------------------------
+1. FONCTIONNALITÉS PRINCIPALES
+----------------------------------------------------------------------
 
-## 1. Fonctionnalités Principales
+1.1 Chargement de Sample
+  - Bouton "Charger un Sample" : Ouvre l'explorateur pour choisir un 
+    fichier audio (.wav, .aif, .aiff).
+  - Glisser-Déposer Direct : Glissez un fichier audio depuis votre 
+    explorateur ou votre DAW sur le visualiseur de forme d'onde.
+  - Sécurité : Les fichiers de plus de 5 minutes sont rejetés.
 
-### 1.1 Chargement de Sample
-* **Bouton "Charger un Sample"** : Ouvre un explorateur de fichiers pour charger un fichier audio (`.wav`, `.aif`, `.aiff`).
-* **Glisser-Déposer Direct** : Vous pouvez glisser un fichier audio directement depuis votre explorateur de fichiers ou votre DAW (comme Ableton Live, FL Studio) sur l'interface du visualiseur de forme d'onde.
-* **Sécurité** : Pour préserver les performances en temps réel, les fichiers de plus de 5 minutes sont automatiquement rejetés.
+1.2 Lecture & Contrôles de Transport
+  - [⏮] Play from 0 : Lance la lecture depuis le tout début du sample.
+  - [▶] Play : Reprend la lecture à la position actuelle du curseur.
+  - [⏸] Stop / Pause : Arrête la lecture et conserve la position.
+  - SYNC DAW : Synchronise le tempo et le transport avec votre DAW.
+    * Note : Lancer la lecture manuelle (Play ou Play from 0) 
+      désactive automatiquement la synchronisation avec le DAW.
 
-### 1.2 Lecture & Contrôles de Transport
-* `⏮` **Play from 0** : Lance la lecture à partir du tout début du sample (échantillon 0).
-* `▶` **Play** : Reprend la lecture à l'endroit précis où se trouve actuellement le curseur de lecture.
-* `⏸` **Stop / Pause** : Arrête instantanément la lecture et conserve la position actuelle du curseur de lecture.
-* **SYNC DAW** : Synchronise automatiquement le tempo et le démarrage du plugin avec le transport de votre séquenceur (DAW). 
-  * *Note : Cliquer sur un bouton de lecture manuelle (`▶` ou `⏮`) désactivera automatiquement la synchronisation pour vous donner le contrôle interne.*
+----------------------------------------------------------------------
+2. LES MODES DE DÉCOUPAGE (SLICING)
+----------------------------------------------------------------------
 
----
+2.1 Mode : Warp-Synced (Grille Rythmique)
+  Divise la boucle en tranches de tailles égales calées sur le tempo.
+  - Grille (Subdivision) : Résolution (de 1 Mesure à la triple-croche).
+  - Beats (Temps) : Longueur de la boucle en temps (ex: 16).
+  - BPM d'Origine : Ajuste le tempo pour caler la grille.
+  - Filtrage intelligent : Ignore les zones de silence total.
 
-## 2. Les Modes de Découpage (Slicing)
+2.2 Mode : Transients (Détection d'Attaques)
+  Analyse le volume pour poser les marqueurs sur les impacts (kicks, 
+  snares, etc.).
+  - Sensibilité (Transients) : Règle la finesse de la détection.
+    * Sensibilité haute (80-100%) : Détecte les moindres détails.
+    * Sensibilité basse (10-30%) : Ne garde que les coups forts.
 
-RythmSlicer vous propose deux algorithmes distincts de génération automatique de tranches :
+----------------------------------------------------------------------
+3. INTERACTIONS DIRECTES SUR LA FORME D'ONDE
+----------------------------------------------------------------------
 
-### 2.1 Mode : Warp-Synced (Grille Rythmique)
-Ce mode divise mathématiquement votre boucle en tranches de tailles égales calées sur le tempo.
-* **Grille (Subdivision)** : Choisissez la résolution de découpe (de 1 Mesure à la triple-croche `1/32`).
-* **Beats (Temps)** : Spécifiez la longueur totale de votre boucle en temps (par défaut 16 temps / 4 mesures).
-* **BPM d'Origine** : Ajustez le tempo d'origine du sample pour caler précisément la grille.
-* **Filtrage intelligent** : Le plugin d'activité détecte automatiquement les zones de silence total (ex: à la fin du fichier) et n'y place aucun marqueur inutile.
+  - Déplacement de Marqueur : Cliquez et glissez une ligne rose pour 
+    ajuster le début d'une tranche.
+  - Suppression de Marqueur : Double-cliquez sur une ligne rose pour 
+    la supprimer et fusionner les tranches adjacentes.
 
-### 2.2 Mode : Transients (Détection d'Attaques)
-Ce mode analyse le signal audio pour détecter les impacts physiques (les attaques de batterie) et y poser les marqueurs de découpe.
-* **Sensibilité (Transients)** : Potentiomètre rotatif réglant la finesse de la détection.
-  * *Sensibilité Haute (ex: 80-100%)* : Détecte le moindre petit bruit, idéal pour isoler les ghost notes et les charleys.
-  * *Sensibilité Basse (ex: 10-30%)* : Ne garde que les coups puissants (Kicks, Snares principaux).
-* Les options de grille et de beats sont automatiquement masquées dans ce mode pour simplifier l'interface.
+----------------------------------------------------------------------
+4. EFFETS DE PERFORMANCE CRÉATIVE
+----------------------------------------------------------------------
 
----
+  - Randomisation (0% à 100%) : Probabilité de sauter vers une tranche 
+    aléatoire lors de la lecture.
+  - Répétition (Stutter) (0% à 100%) : Probabilité de répéter la même 
+    tranche (bégaiement/roulement).
 
-## 3. Interactions Directes sur la Forme d'Onde
+----------------------------------------------------------------------
+5. EXPORT VERS LE DAW (DRAG & DROP WAV)
+----------------------------------------------------------------------
 
-Vous pouvez affiner et éditer manuellement vos tranches directement sur le visualiseur :
-* **Déplacement de Marqueur** : Cliquez sur une ligne de découpe rose (le curseur change en icône de redimensionnement gauche-droite) et glissez-la pour ajuster précisément le début d'une tranche.
-* **Suppression de Marqueur** : Double-cliquez sur une ligne rose pour la faire disparaître. Cela fusionne instantanément les deux tranches adjacentes.
+  - Cliquez sur le bandeau en bas, maintenez le clic enfoncé et 
+    glissez-le vers une piste audio de votre DAW. RythmSlicer compile 
+    la boucle modifiée en WAV et l'importe directement dans votre DAW.
 
----
+----------------------------------------------------------------------
+6. RÉFÉRENCES ET COPYRIGHTS (LICENCES LOGICIELLES)
+----------------------------------------------------------------------
 
-## 4. Effets de Performance Créative
+RythmSlicer est distribué sous licence libre MIT. Les outils tiers 
+suivants ont permis sa réalisation :
 
-Ces effets modifient l'ordre de lecture des tranches pour créer de la variation en temps réel :
-
-### 4.1 Randomisation (0% à 100%)
-* À la fin de chaque tranche, ce potentiomètre définit la probabilité de sauter vers une autre tranche complètement au hasard au lieu de lire la suivante.
-* *Exemple : À 50%, vous obtenez une boucle à moitié ordonnée et à moitié réarrangée aléatoirement.*
-
-### 4.2 Répétition (Stutter) (0% à 100%)
-* Définit la probabilité qu'une même tranche se répète (effet de bégaiement ou "stutter") au lieu de passer à la suite.
-* *Exemple : Idéal pour créer des roulements de caisse claire en fin de boucle.*
-
----
-
-## 5. Export vers le DAW (Drag & Drop WAV)
-
-* **Bandeau "CLIQUEZ & GLISSEZ ICI VERS LE DAW (WAV)"** : 
-  * Cliquez sur ce bouton, maintenez le clic enfoncé et glissez-le vers une piste audio de votre DAW (Ableton, FL Studio, Reaper, etc.).
-  * RythmSlicer compile en arrière-plan le sample découpé avec vos réglages actuels (incluant le Stutter et la Randomisation) et génère un nouveau fichier `.wav` propre directement importé sur votre piste !
-
----
-
-## 6. Références et Copyrights (Licences Logicielles)
-
-RythmSlicer est distribué sous licence libre **MIT**. Les logiciels tiers suivants ont permis sa réalisation :
-
-* **JUCE Framework** (version 8) : Copyright (c) 2024 - Raw Material Software Limited. Utilisé sous licence de développement JUCE.
-* **Microsoft Visual Studio & MSBuild** : Copyright (c) - Microsoft Corporation.
-* **Git Version Control System** : Copyright (c) 2005-2026 - Linus Torvalds et ses contributeurs.
-* **Bibliothèque Standard C++ (STL)** : Conforme aux normes ISO/IEC.
-)markdown";
-    helpTextLabel.setText(helpMarkdown);
+  - JUCE Framework (v8) : Copyright (c) 2024 - Raw Material Software 
+    Limited. Utilisé sous licence de développement JUCE.
+  - Microsoft Visual Studio & MSBuild : Copyright (c) - Microsoft Corp.
+  - Git Version Control System : Copyright (c) 2005-2026 - Linus 
+    Torvalds et ses contributeurs.
+  - Bibliothèque Standard C++ (STL) : Conforme aux normes ISO/IEC.
+)help");
+    helpTextLabel.setText(helpText);
   }
 
   void paint(juce::Graphics &g) override {
